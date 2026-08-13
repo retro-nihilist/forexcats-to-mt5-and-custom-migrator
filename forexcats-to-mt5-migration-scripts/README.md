@@ -1,33 +1,60 @@
-## 🏗 Architecture & Data Pipeline
+## 🗺 Структура проекта
+Посмотреть интерактивную карту проекта:
+👉 [Открыть карту онлайн](https://retro-nihilist.github.io/Migrating-ForexCat-platform-to-MetaTrader5/)
 
-The project follows a robust **ETL (Extract, Transform, Load)** architecture designed to process raw, heterogeneous trading logs into strictly validated, system-compliant structures for both MetaTrader 5 and custom database environments.
+# Migrating ForexCat platform to MetaTrader 5
 
+Комплексный инструментарий на языке **Python** для автоматизации административных задач и процесса миграции данных при переходе с торговой платформы ForexCat на **MetaTrader 5 (MT5)**. 
+
+Проект включает в себя интеграцию с **Manager API** и **Admin API** MetaTrader 5, работу с базами данных **MySQL (CRM)** и глубокую обработку данных с использованием библиотек **Pandas** и **NumPy**.
+
+## Основные возможности
+
+### 1. Управление торговыми счетами
+*   **Массовая инициализация:** Автоматическая проверка и вход в список аккаунтов через терминал MT5 для сбора детальной информации (баланс, плечо, режим маржи).
+*   **Безопасность:** Скрипты для пакетной смены мастер-паролей торговых счетов.
+*   **Полная очистка:** Инструменты для удаления всей торговой истории (ордеров, сделок и открытых позиций) для выбранных групп счетов перед миграцией.
+
+### 2. Клонирование и настройка инструментов (Символов)
+*   **Создание символов-дублей:** Массовое создание новых символов с суффиксом `.fc`. Программа сохраняет исходный инструмент в поле *Source* и автоматически переносит их в новую структуру папок `FC\`.
+*   **Редактирование атрибутов:** Пакетное изменение описаний (Description), расчет хеджированной маржи и установка международных названий.
+*   **Оптимизация контрактов:** Расчет минимального количества контрактов для объема 0.01 лота на основе стоимости спреда.
+
+### 3. Синхронизация данных с CRM
+*   **Импорт цен и спредов:** Загрузка текущих котировок из MySQL CRM и их сопоставление с данными на сервере MT5.
+*   **Управление спредом:** Установка фиксированных значений спреда и балансировка смещения (Spread Balance) на стороне сервера.
+*   **Протоколирование:** Модуль циклического сбора статистики спредов и цен в CSV-файлы для анализа стабильности потока котировок.
+
+### 4. Обработка торговой истории
+*   **Перенос позиций:** Скрипты для формирования общей таблицы торговых и балансовых результатов на основе SQL-запросов к CRM.
+*   **Валидация данных:** Функции поиска расхождений в профите, отсутствующих символов и ошибок при создании объектов сделок в MT5.
+
+## Структура проекта
+
+Проект разделен на логические блоки:
+*   `Preparing_for_Migration/` — подготовка серверной среды (создание символов, настройка спредов).
+*   `Create_Total_Trader_History/` — логика обработки и переноса истории сделок.
+*   `Study_and_Testing/` — примеры использования API и тестовые сценарии.
+*   `libraries_py/` — основные библиотеки:
+    *   `mt5_api.py` — обертки для Manager и Admin API.
+    *   `dynamic_import_functions.py` — система динамической загрузки модулей с очисткой кэша.
+    *   `yar_sed_general_lib.py` — общие утилиты для работы с CSV, Pandas и выводом логов.
+
+## Технические требования
+
+*   **Python:** 3.12.4 или выше.
+*   **Окружение:** Windows (для работы библиотеки MetaTrader5).
+*   **Зависимости:** `MetaTrader5`, `pandas`, `numpy`, `mysql-connector-python`, `sqlalchemy`.
+
+## Настройка
+
+Для инициализации путей к библиотекам и файлам данных используется файл конфигурации `directory_config.txt`:
+
+```text
+directory_data_temp_files = 'working_data_files'
+directory_data_log_files = 'log_data_files'
+directory_libraries_path = 'libraries_py'
 ```
-┌────────────────────────┐      ┌───────────────────────────────────┐      ┌────────────────────────┐
-│  ForexCats Source Data │ ───> │  Validation & Transformation      │ ───> │  Target Environments   │
-│  (Raw Trade Logs &     │      │  Engine                           │      │  • MetaTrader 5        │
-│   Account States)      │      │  (Precision, Mapping & Validation)│      │  • Custom DB / BigData │
-└────────────────────────┘      └───────────────────────────────────┘      └────────────────────────┘
-```
-
-### Core Architecture Layers:
-1. **Extraction & Ingestion Layer:** Safely parses heterogeneous raw source data from the ForexCats platform while maintaining transactional context and sequence boundaries.
-2. **Transformation & Normalization Engine:** 
-   * **Order Mechanics Translation:** Maps non-standard order types, execution modes, and rollover/swap mechanisms directly to MT5 and generic financial domain schemas.
-   * **Financial-Grade Precision:** Handles floating-point rounding issues, currency conversions, and high-precision price/pnl recalculations.
-   * **Timestamp Normalization:** Aligns microsecond/millisecond execution timestamps across differing server time zones and DST (Daylight Saving Time) offsets.
-3. **Validation & Integrity Layer:** Enforces zero-data-loss policies through multi-stage pre-ingestion checks, verifying balance state integrity against historical closed positions.
-4. **Target Adapter Layer:** Abstracted loaders that format and batch-inject transformed records into target destinations (MT5 server databases, MySQL/PostgreSQL, or flat compressed analytical archives).
 
 ---
-
-## ⚡ Advanced Features & Technical Highlights
-
-* **Complex Financial Logic Mapping:** Automatically translates custom ForexCats deal types, partial fills, and commission structures into standard MT5/FIX-compliant transaction models.
-* **Historical Balance Reconstruction:** Verifies and reconciles client account balance states before and after migration to guarantee 100% financial accuracy and prevent ledger discrepancies.
-* **Collision & Duplicate Prevention:** Utilizes deterministic unique key generation algorithms to eliminate ticket collision risks when migrating into pre-populated target databases.
-* **High-Throughput Batch Processing:** Optimized for large-scale datasets (BigData), leveraging parallel processing and memory-efficient streaming parsers to handle high transaction volumes without memory leaks.
-* **Edge-Case Resilience:** Built-in fault tolerance to catch and log broken records, missing quotes, or incomplete trade cycles without interrupting the overall pipeline execution.
-* **Auditability & Logging:** Comprehensive execution logs and summary reports generated per migration run for full administrative transparency and compliance auditing.
-
-Tech Stack Highlights: Python 3.x, Async/Multiprocessing, SQL (MySQL/PostgreSQL), Structured JSON/ZIP Archiving, MetaTrader 5 Integration APIs.
+*Важно: Операции по удалению истории (`Deleting_Clients_History`) и массовому обновлению символов (`SymbolUpdateBatch`) требуют прав администратора на сервере MT5 и должны предварительно тестироваться на демо-сервере.*
