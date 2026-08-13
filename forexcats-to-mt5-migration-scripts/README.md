@@ -2,13 +2,13 @@
 
 The project follows a robust **ETL (Extract, Transform, Load)** architecture designed to process raw, heterogeneous trading logs into strictly validated, system-compliant structures for both MetaTrader 5 and custom database environments.
 
-"""text
+```
 ┌────────────────────────┐      ┌───────────────────────────────────┐      ┌────────────────────────┐
 │  ForexCats Source Data │ ───> │  Validation & Transformation      │ ───> │  Target Environments   │
 │  (Raw Trade Logs &     │      │  Engine                           │      │  • MetaTrader 5        │
 │   Account States)      │      │  (Precision, Mapping & Validation)│      │  • Custom DB / BigData │
 └────────────────────────┘      └───────────────────────────────────┘      └────────────────────────┘
-"""
+```
 
 ### Core Architecture Layers:
 1. **Extraction & Ingestion Layer:** Safely parses heterogeneous raw source data from the ForexCats platform while maintaining transactional context and sequence boundaries.
