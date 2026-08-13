@@ -1,7 +1,8 @@
 ## 🏗 Architecture & Data Pipeline
 
 The project follows a robust **ETL (Extract, Transform, Load)** architecture designed to process raw, heterogeneous trading logs into strictly validated, system-compliant structures for both MetaTrader 5 and custom database environments.
-"""
+
+"""text
 ┌────────────────────────┐      ┌───────────────────────────────────┐      ┌────────────────────────┐
 │  ForexCats Source Data │ ───> │  Validation & Transformation      │ ───> │  Target Environments   │
 │  (Raw Trade Logs &     │      │  Engine                           │      │  • MetaTrader 5        │
