@@ -210,53 +210,6 @@ def process_deal(user_login, balance_transactions, deal_action, comment):       
     return manager.DealerBalance(user_login, balance_transactions, deal_action, comment)
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-"""# Функция Для массового пополнения / снятия методом коррекции с указанием даты <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-# ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-def balance_0 (acc_set, summ0, date0, Description_action,  deal_action = mt5m.MTDeal.EnDealAction.DEAL_CORRECTION):
-    # acc_set   -   Список счетов;
-    #summ0      -   Сумма пополнения;
-    #date0      -   Дата, которая устанавливается в транзакцию (после совершения оной)
-
-    error_balance_0_list = []
-    error_update_0_list = []
-    balance_0_list = []
-
-    print(f"Количество аккаунтов для нулевого пополнения на [{summ0}]: {len(acc_set)}")
-
-    manager = manager_connect()
-    if manager:
-        for a in acc_set:
-            user = mt5m.MTUser(manager)
-            user.Login = a
-            comment = str(summ0)
-
-            deal_id = process_deal(user.Login, summ0, deal_action, comment, Description_action)
-            
-            if deal_id:
-                deal = manager.DealRequest(deal_id)
-                deal.Time = date0                           # Время 2023 06 01 00 00 00
-                deal.TimeMsc = date0 *1000
-                update_result = manager.DealUpdate(deal)
-
-                if update_result > 1:
-                    print(f"{a}, Ошибка при обновлении сделки: {mt5m.LastError()}")
-                    error_update_0_list.append(a)
-                else:
-                    balance_0_list.append(a)  # Добавляем логин с успешным пополнением
-            else:
-                print(f"{a}, Ошибка при создании сделки: {mt5m.LastError()}")
-                error_balance_0_list.append(a)  # Добавляем логин с неудачным пополнением
-
-            del user  # Освобождаем ресурсы для пользователя
-
-    else: print(f"{a}, ERROR manager.Connect()): {mt5m.LastError()}")
-
-    print(f"manager_Disconnect() = {manager.Disconnect()}") 
-
-    print(f"Количество неуспешных ПОПОЛНЕНИЙ [{summ0}]: {len(error_balance_0_list)} \n {error_balance_0_list}")
-    print(f"Количество неуспешных ОБНОВЛЕНИЙ [{summ0}]: {len(error_update_0_list)} \n {balance_0_list}")
-# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-"""
 # Функция Для массового пополнения / снятия методом коррекции с указанием даты <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 def balance_0 (acc_set, summ0, date0, Description_action):
     print(f"Функция Для массового пополнения / снятия методом коррекции с указанием даты ")
@@ -340,26 +293,6 @@ def getting_array_trading_instruments(symbols_list="*"):    # Работает �
     else: print(f"Error: {mt5m.LastError()}")
     return symbol_array
 # >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-"""
-# Извлечение массива торговых инструментов <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< 
-def getting_array_trading_instruments(symbols_list="*"):
-    print("<getting_array_trading_instruments>: symbols_list = ", symbols_list)
-    if manager_connect():
-        print(f"SymbolTotal = {manager.SymbolTotal()}")         # Количество Торговых инструментов на сервере
-        symbol_array = manager.SymbolRequestArray(symbols_list) # Запрашиваем массив всех торговых инструментов
-
-        try:
-            print("len_symbol_array = ", len(symbol_array))         # выводим количество элементов в массиве
-        except:
-            print(f"Невозможно определить длину массива по запросу По запросу <SymbolRequestArray({symbols_list})>")
-            print(f"Error: {MT5Manager.LastError()}")
-
-        print("manager.Disconnect() = ", manager.Disconnect())
-    else: print(f"Error: {MT5Manager.LastError()}")
-    return symbol_array"""
-
-
-
 
 # Обновление массива торговых инструментов <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 def symbol_update_batch(symbol_array):
