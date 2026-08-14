@@ -60,7 +60,7 @@
    - Сохранение результата в `report_df.csv`.
 
 ## Структура проекта
-
+```
 Calculation_of_Paid_Spread_per_Trade/
 ├── input_data/
 │   ├── input_samples/          # Тестовые данные
@@ -72,7 +72,7 @@ Calculation_of_Paid_Spread_per_Trade/
 │   └── output_log_data/        # Логи
 └── ipynb_files/
 └── Calculation_of_Paid_Spread_per_Trade_samples.ipynb
-
+```
 
 ## Запуск
 
